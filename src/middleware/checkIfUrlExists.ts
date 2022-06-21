@@ -12,8 +12,7 @@ const checkIfUrlExists = async (
   if (url && url.counter !== undefined) {
     url.counter = url.counter + 1;
     url.save();
-    // res.send(url);
-    // res.redirect("/");
+    res.send(url);
   } else {
     next();
   }

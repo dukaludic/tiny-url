@@ -85,7 +85,6 @@ const insertUrl = async (req: Request, res: Response) => {
     });
 
     res.send(url);
-    // res.redirect("/");
     return;
   } catch (error) {
     console.log(error);
