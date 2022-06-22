@@ -2,13 +2,12 @@ import express, { Application, Request, Response, NextFunction } from "express";
 import dotenv from "dotenv";
 dotenv.config();
 import urlsRouter from "./routes/urlRoutes";
-import viewsRouter from "./client/routes/viewRoutes";
 import { errorHandler } from "./middleware/error";
 import bodyparser from "body-parser";
 import mongoose from "mongoose";
 import path from "path";
 const cors = require("cors");
-import { redirectToOriginal } from "./controllers/appController";
+import { redirectToOriginal } from "./controllers/redirectController";
 
 // Connect database
 (async () => {
@@ -17,10 +16,10 @@ import { redirectToOriginal } from "./controllers/appController";
       `${process.env.MONGO_CONNECTION}`
     );
 
-    // console.log(connection);
     console.log("Connected to database");
   } catch (error) {
     console.log(error);
+    // os.exit(1);
   }
 })();
 
@@ -29,9 +28,15 @@ app.use(cors());
 app.use(bodyparser.json());
 
 app.use("/urls", urlsRouter);
-app.use("/views", viewsRouter);
 
-app.get("/redirect/:shortUrl", redirectToOriginal);
+//sredi ovo da bude na root endpoint
+app.get("/:shortUrl", redirectToOriginal);
+
+// mongoose.connect(`${process.env.MONGO_CONNECTION}`).then(() => {
+//   app.listen(process.env.PORT, (): void => {
+//     console.log("Server listening on port 3000");
+//   });
+// });
 
 app.listen(process.env.PORT, (): void => {
   console.log("Server listening on port 3000");

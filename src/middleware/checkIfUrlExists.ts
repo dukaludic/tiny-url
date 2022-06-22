@@ -1,5 +1,5 @@
 import express, { Request, Response, NextFunction } from "express";
-import Url from "../models/urlModel";
+import { Url } from "../models/urlModel";
 
 const checkIfUrlExists = async (
   req: Request,
@@ -9,13 +9,14 @@ const checkIfUrlExists = async (
   const filter = { long_url: { $eq: req.body.long_url } };
   const url = await Url.findOne(filter);
   console.log(url, "exists");
-  if (url && url.counter !== undefined) {
-    url.counter = url.counter + 1;
-    url.save();
-    res.send(url);
-  } else {
-    next();
-  }
+  // if (url && url.counter !== undefined) {
+  //   url.counter = url.counter + 1;
+  //   url.save();
+  //   res.send(url);
+  // } else {
+  //   next();
+  // }
+  next();
 };
 
 export { checkIfUrlExists };
