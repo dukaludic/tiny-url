@@ -11,7 +11,15 @@ const router = express.Router();
 
 router.get("/", getUrls);
 // router.use(errorHandler);
-router.post("/", checkIfUrlExists, insertUrl);
+router.post(
+  "/",
+  (req, res, next) => {
+    console.log("router");
+    next();
+  },
+  checkIfUrlExists,
+  insertUrl
+);
 
 router.get("/:id", getSingleUrl);
 

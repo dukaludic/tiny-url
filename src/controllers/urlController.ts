@@ -13,11 +13,6 @@ const getUrls = async (req: Request, res: Response) => {
 };
 
 const insertUrl = async (req: Request, res: Response) => {
-  if (!req.body.long_url) {
-    res.status(400);
-    throw new Error("Input is needed");
-  }
-
   //   const base58Encode = (deci: number): string => {
   //     const chars: string =
   //       "123456789abcdefghijkmnpqrstuvwxyzABCDEFGHIJKLMNPQRSTUVWXYZ";
@@ -45,7 +40,7 @@ const insertUrl = async (req: Request, res: Response) => {
 
   //   console.log(encode(3213122));
 
-  console.log("Works");
+  console.log("insertUrl");
 
   //   const hash = base58Encode(7);
 
@@ -75,7 +70,7 @@ const insertUrl = async (req: Request, res: Response) => {
       return str;
     };
 
-    const shortUrl = createShortUrl(counter);
+    const shortUrl = `${createShortUrl(counter)}`;
 
     console.log(createShortUrl(14723), "createShortUrl");
 
