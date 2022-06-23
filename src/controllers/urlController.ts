@@ -58,7 +58,11 @@ const getDomainCounts = async (req: Request, res: Response): Promise<void> => {
   console.log(req.query);
 
   try {
-    const urls = await Url.find();
+    const urls = await Url.find({
+      createdAt: { $gt: new Date(Date.now() - 24 * 60 * 60 * 1000) },
+    });
+
+    // const urls = await Url.find();
 
     const domains: object[] = [];
     for (let i = 0; i < urls.length; i++) {
@@ -77,7 +81,7 @@ const getDomainCounts = async (req: Request, res: Response): Promise<void> => {
       return b.count - a.count;
     });
 
-    console.log(domains);
+    console.log(domains, domains.length);
 
     domains.slice(0, Number(req.query.limit));
 
