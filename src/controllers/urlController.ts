@@ -81,11 +81,13 @@ const getDomainCounts = async (req: Request, res: Response): Promise<void> => {
       return b.count - a.count;
     });
 
-    console.log(domains, domains.length);
+    const limited = domains.slice(0, Number(req.query.limit));
 
-    domains.slice(0, Number(req.query.limit));
+    console.log(domains, domains.length, limited, limited.length);
 
-    res.send(domains);
+    console.log(req.query.limit, "req.query.limit");
+
+    res.send(limited);
   } catch (error) {
     res.status(500).send({ msg: "Something went wrong" });
   }
