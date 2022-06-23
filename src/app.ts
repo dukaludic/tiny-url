@@ -26,12 +26,12 @@ import { redirectToOriginal } from "./controllers/redirectController";
 const app: Application = express();
 app.use(cors());
 app.use(bodyparser.json());
-
 app.use("/urls", urlsRouter);
 
 //sredi ovo da bude na root endpoint
 app.get("/:shortUrl", redirectToOriginal);
 
+app.use(errorHandler);
 // mongoose.connect(`${process.env.MONGO_CONNECTION}`).then(() => {
 //   app.listen(process.env.PORT, (): void => {
 //     console.log("Server listening on port 3000");

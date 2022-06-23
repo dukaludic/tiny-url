@@ -16,4 +16,4 @@ export interface TypeUrl extends mongoose.Document {
   domain: string;
 }
 
-export const Url = mongoose.model("Url", urlSchema);
+export const Url = mongoose.model<TypeUrl>("Url", urlSchema);
