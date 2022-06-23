@@ -24,26 +24,21 @@ const insertUrl = async (req: Request, res: Response): Promise<void> => {
     let shortUrl = nanoid(7);
     // let shortUrl = "Vl0RIyjx";
 
-    let isReserved: object | null = await Url.find({
+    let isReserved: object[] | null = await Url.find({
       short_url: { $eq: shortUrl },
     });
 
     console.log(isReserved, "isReserved");
 
-    if (isReserved) {
+    if (isReserved.length) {
       shortUrl = nanoid(8);
       console.log(shortUrl, "shortUrl in If");
       isReserved = await Url.find({ short_url: { $eq: shortUrl } });
     }
 
-    if (isReserved) {
-      shortUrl = nanoid(9);
-      console.log(shortUrl, "shortUrl in If");
-      isReserved = await Url.find({ short_url: { $eq: shortUrl } });
-    }
-
-    if (isReserved) {
-      // res.status(500).send({ msg: "Please try again" });
+    if (isReserved.length) {
+      res.status(500).send({ msg: "Please try again" });
+      return;
     }
 
     const url = await Url.create({
