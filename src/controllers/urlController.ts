@@ -14,9 +14,16 @@ const getUrls = async (req: Request, res: Response): Promise<void> => {
 };
 
 const insertUrl = async (req: Request, res: Response): Promise<void> => {
-  let domain = new URL(req.body.long_url);
+  let domain;
+  try {
+    domain = new URL(req.body.long_url);
+  } catch (error) {
+    res.status(500).send(error);
+  }
 
-  console.log(domain.host, "domain");
+  if (!domain) {
+    return;
+  }
 
   try {
     // const counter: any = await Url.count({});
@@ -41,7 +48,7 @@ const insertUrl = async (req: Request, res: Response): Promise<void> => {
       return;
     }
 
-    const url = await Url.create({
+    const url: TypeUrl = await Url.create({
       long_url: req.body.long_url,
       short_url: shortUrl,
       domain: domain.host,
