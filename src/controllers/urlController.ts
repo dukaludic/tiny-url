@@ -3,33 +3,21 @@ import { nanoid } from "nanoid";
 import { Url } from "../models/urlModel";
 import { TypeUrl } from "../models/urlModel";
 
-// mozda koristiti asyncHandler iz expressa
-const getUrls = async (req: Request, res: Response): Promise<void> => {
-  try {
-    const urls = await Url.find();
-    res.send(urls);
-  } catch (error) {
-    console.log(error);
-  }
-};
-
 const insertUrl = async (req: Request, res: Response): Promise<void> => {
-  let domain;
+  let domain: URL;
   try {
     domain = new URL(req.body.long_url);
   } catch (error) {
     res.status(500).send(error);
   }
 
+  // @ts-ignore
   if (!domain) {
     return;
   }
 
   try {
-    // const counter: any = await Url.count({});
-
     let shortUrl = nanoid(7);
-    // let shortUrl = "Vl0RIyjx";
 
     let isReserved: object[] | null = await Url.find({
       short_url: { $eq: shortUrl },
@@ -37,26 +25,29 @@ const insertUrl = async (req: Request, res: Response): Promise<void> => {
 
     console.log(isReserved, "isReserved");
 
-    if (isReserved.length) {
+    if (isReserved.length > 0) {
       shortUrl = nanoid(8);
       console.log(shortUrl, "shortUrl in If");
       isReserved = await Url.find({ short_url: { $eq: shortUrl } });
     }
 
-    if (isReserved.length) {
+    if (isReserved.length > 0) {
       res.status(500).send({ msg: "Please try again" });
       return;
     }
 
-    const url: TypeUrl = await Url.create({
+    const urlObject: object = {
       long_url: req.body.long_url,
       short_url: shortUrl,
       domain: domain.host,
-    });
+    };
+
+    const url: TypeUrl = await Url.create(urlObject);
 
     res.send(url);
     return;
   } catch (error) {
+    console.log(error);
     res.status(500).send({ msg: "Something went wrong" });
   }
 };
@@ -65,11 +56,9 @@ const getDomainCounts = async (req: Request, res: Response): Promise<void> => {
   console.log(req.query);
 
   try {
-    const urls = await Url.find({
+    const urls: TypeUrl[] = await Url.find({
       createdAt: { $gt: new Date(Date.now() - 24 * 60 * 60 * 1000) },
     });
-
-    // const urls = await Url.find();
 
     const domains: object[] = [];
     for (let i = 0; i < urls.length; i++) {
@@ -90,10 +79,6 @@ const getDomainCounts = async (req: Request, res: Response): Promise<void> => {
 
     const limited = domains.slice(0, Number(req.query.limit));
 
-    console.log(domains, domains.length, limited, limited.length);
-
-    console.log(req.query.limit, "req.query.limit");
-
     res.send(limited);
   } catch (error) {
     res.status(500).send({ msg: "Something went wrong" });
@@ -102,9 +87,8 @@ const getDomainCounts = async (req: Request, res: Response): Promise<void> => {
 
 const getSingleUrl = async (req: Request, res: Response): Promise<void> => {
   console.log(req.params.id);
-  const url = Url.findOne({ _id: req.params.id });
-  //   console.log
+  const url = Url.findOne<TypeUrl>({ _id: req.params.id });
   res.send("getSingleUrl");
 };
 
-export { getUrls, insertUrl, getSingleUrl, getDomainCounts };
+export { insertUrl, getSingleUrl, getDomainCounts };

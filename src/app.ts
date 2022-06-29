@@ -5,39 +5,20 @@ import urlsRouter from "./routes/urlRoutes";
 import { errorHandler } from "./middleware/error";
 import bodyparser from "body-parser";
 import mongoose from "mongoose";
-import path from "path";
 const cors = require("cors");
 import { redirectToOriginal } from "./controllers/redirectController";
-
-// Connect database
-(async () => {
-  try {
-    const connection = await mongoose.connect(
-      `${process.env.MONGO_CONNECTION}`
-    );
-
-    console.log("Connected to database");
-  } catch (error) {
-    console.log(error);
-    // os.exit(1);
-  }
-})();
 
 const app: Application = express();
 app.use(cors());
 app.use(bodyparser.json());
-app.use("/urls", urlsRouter);
+app.use(errorHandler);
 
-//sredi ovo da bude na root endpoint
+app.use("/urls", urlsRouter);
 app.get("/:shortUrl", redirectToOriginal);
 
-app.use(errorHandler);
-// mongoose.connect(`${process.env.MONGO_CONNECTION}`).then(() => {
-//   app.listen(process.env.PORT, (): void => {
-//     console.log("Server listening on port 3000");
-//   });
-// });
-
-app.listen(process.env.PORT, (): void => {
-  console.log("Server listening on port 3000");
+mongoose.connect(`${process.env.MONGO_CONNECTION}`).then(() => {
+  console.log("Connected to database");
+  app.listen(process.env.PORT, (): void => {
+    console.log("Server listening on port 3000");
+  });
 });
