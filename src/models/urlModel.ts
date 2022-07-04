@@ -1,6 +1,12 @@
 import mongoose from "mongoose";
 
-const urlSchema = new mongoose.Schema(
+export interface TypeUrl extends mongoose.Document {
+  long_url: string;
+  short_url: string;
+  domain: string;
+}
+
+const urlSchema = new mongoose.Schema<TypeUrl>(
   {
     long_url: { type: String, required: false },
     short_url: { type: String, required: false },
@@ -15,12 +21,6 @@ const urlSchema = new mongoose.Schema(
   }
 );
 
-// urlSchema.index({ createdAt: 1 }, { expireAfterSeconds: 10 });
-
-export interface TypeUrl extends mongoose.Document {
-  long_url: string;
-  short_url: string;
-  domain: string;
-}
+urlSchema.index({ createdAt: 1 }, { expireAfterSeconds: 86400 });
 
 export const Url = mongoose.model<TypeUrl>("Url", urlSchema);
